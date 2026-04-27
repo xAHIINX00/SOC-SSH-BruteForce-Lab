@@ -1,0 +1,6 @@
+index=main sourcetype=linux_secure "Failed password"
+| rex field=_raw "from (?<src_ip>\d+\.\d+\.\d+\.\d+)"
+| bucket _time span=1m
+| stats count as attempts by _time src_ip
+| where attempts >= 3
+| sort _time

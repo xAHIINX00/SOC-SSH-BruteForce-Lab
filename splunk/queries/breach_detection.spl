@@ -1,0 +1,7 @@
+index=main sourcetype=linux_secure
+| rex field=_raw "from (?<src_ip>\d+\.\d+\.\d+\.\d+)"
+| eval status=if(match(_raw,"Failed password"),"failed","success")
+| stats count(eval(status="failed")) as failures,
+        count(eval(status="success")) as successes by src_ip
+| where failures >= 3 AND successes >= 1
+| sort -failures

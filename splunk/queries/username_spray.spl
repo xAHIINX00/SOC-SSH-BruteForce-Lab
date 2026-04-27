@@ -1,0 +1,6 @@
+index=main sourcetype=linux_secure "Invalid user"
+| rex field=_raw "Invalid user (?<username>\S+) from (?<src_ip>\d+\.\d+\.\d+\.\d+)"
+| stats dc(username) as unique_users count as attempts by src_ip
+| where unique_users >= 3
+| sort -unique_users
+| rename src_ip as "Attacker IP", unique_users as "Unique Usernames Tried"
