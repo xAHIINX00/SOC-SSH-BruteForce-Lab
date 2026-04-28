@@ -8,6 +8,8 @@
 > A fully functional Security Operations Center (SOC) lab that simulates, detects, and automatically responds to SSH brute force attacks — built from scratch using real tools used in production environments.
 
 ---
+## 📹 Demo Video
+[![Watch Demo](https://img.youtube.com/vi/XzOOZSmnecM/0.jpg)](https://youtu.be/XzOOZSmnecM)
 
 ## 📌 Project Summary
 
