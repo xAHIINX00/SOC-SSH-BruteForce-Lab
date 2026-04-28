@@ -3,7 +3,9 @@
 ![SOC](https://img.shields.io/badge/SOC-Blue_Team-blue)
 ![Splunk](https://img.shields.io/badge/SIEM-Splunk-orange)
 ![Python](https://img.shields.io/badge/Automation-Python-green)
+![Fail2Ban](https://img.shields.io/badge/IPS-Fail2Ban-red)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen)
+![Platform](https://img.shields.io/badge/Platform-VirtualBox-lightgrey)
 
 > A fully functional Security Operations Center (SOC) lab that simulates, detects, and automatically responds to SSH brute force attacks — built from scratch using real tools used in production environments.
 
@@ -87,8 +89,10 @@ This project demonstrates the **complete SOC analyst workflow** for handling an 
 
 ### Phase 2 — Attack Simulation
 - Conducted password brute force attack using Hydra targeting SSH
+  ![Hydra Attack](screenshots/01_hydra_brute_force_attack.png)
 - Conducted username spray attack (multiple usernames, single password)
 - Verified live attack events appearing in Splunk in real time
+  ![Splunk Live Detection](screenshots/02_splunk_live_attack_detected.png)
 
 ### Phase 3 — SPL Detection Queries
 Four detection queries written covering different attack patterns:
@@ -102,6 +106,7 @@ index=main sourcetype=linux_secure "Failed password"
 | sort -attempts
 | rename src_ip as "Attacker IP", attempts as "Failed Attempts"
 ```
+![Brute Force Threshold](screenshots/03_splunk_query1_brute_force_threshold.png)
 
 **Query 2 — Username Spray Detection**
 ```spl
@@ -111,6 +116,7 @@ index=main sourcetype=linux_secure "Invalid user"
 | where unique_users >= 3
 | sort -unique_users
 ```
+![Username Spray](screenshots/04_splunk_query2_username_spray.png)
 
 **Query 3 — Attack Burst Timeline**
 ```spl
@@ -121,6 +127,7 @@ index=main sourcetype=linux_secure "Failed password"
 | where attempts >= 3
 | sort _time
 ```
+![Attack Timeline](screenshots/05_splunk_query3_attack_timeline.png)
 
 **Query 4 — Successful Login After Failures (Breach Detection)**
 ```spl
@@ -132,6 +139,7 @@ index=main sourcetype=linux_secure
 | where failures >= 3 AND successes >= 1
 | sort -failures
 ```
+![Breach Detection](screenshots/06_splunk_query4_breach_detection.png)
 
 ### Phase 4 — Dashboard & Alerting
 - Built 4-panel real-time Splunk dashboard with 1-minute auto-refresh
@@ -140,6 +148,9 @@ index=main sourcetype=linux_secure
 
 ### Phase 5 — Automated Response (SOAR-lite) ⭐
 The standout feature of this project. When Splunk detects a brute force:
+
+![Auto Response Server](screenshots/07_auto_response_blocked_via_ufw.webp)
+![Incident Logged](screenshots/08_auto_response_incident_logged.webp)
 
 1. Splunk alert fires → hits Python Flask webhook
 2. Flask server receives attacker IP + attempt count
@@ -164,8 +175,14 @@ The standout feature of this project. When Splunk detects a brute force:
 - SSH hardened: `PasswordAuthentication no`, `PermitRootLogin no`, `MaxAuthTries 3`
 - Re-ran Hydra post-hardening: `Connection refused` — attack completely neutralised
 - Fail2Ban ban events ingested into Splunk via `/var/log/fail2ban.log`
-
 ---
+![Fail2Ban Running](screenshots/09_fail2ban_service_running.webp)
+
+![Fail2Ban Banned IP](screenshots/10_fail2ban_ip_banned.webp)
+
+![Splunk Fail2Ban Events](screenshots/11_splunk_fail2ban_events.png)
+
+![Connection Refused](screenshots/12_post_hardening_connection_refused.webp)
 
 ## 🎯 Skills Demonstrated
 
